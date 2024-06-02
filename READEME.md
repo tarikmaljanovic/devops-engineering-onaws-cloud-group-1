@@ -35,7 +35,7 @@ In this phase, we planned the architecture design and estimated the cost for the
 **Ensuring Each Requirement Was Addressed**
 - We made sure that each requirement was met by the proposed architecture. This included ensuring data flow efficiency, network architecture robustness, implementing security measures, and appropriately allocating resources.
 
-![alt text](https://github.com/tarikmaljanovic/devops-engineering-onaws-cloud-group-1/blob/dev/docs/Architecture%20Diagram-Phase%204.png?raw=true)
+![alt text](https://github.com/tarikmaljanovic/devops-engineering-onaws-cloud-group-1/blob/dev/docs/Architecture%20Diagram-Phase%203.png?raw=true)
 
 
 #### Task 2: Developing a cost estimate

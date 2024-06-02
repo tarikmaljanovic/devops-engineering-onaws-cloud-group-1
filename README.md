@@ -35,7 +35,7 @@ In this phase, we planned the architecture design and estimated the cost for the
 **Ensuring Each Requirement Was Addressed**
 - We made sure that each requirement was met by the proposed architecture. This included ensuring data flow efficiency, network architecture robustness, implementing security measures, and appropriately allocating resources.
 
-![alt text](https://github.com/tarikmaljanovic/devops-engineering-onaws-cloud-group-1/blob/dev/docs/Architecture%20Diagram-Phase%203.png?raw=true)
+![alt text](https://github.com/tarikmaljanovic/devops-engineering-onaws-cloud-group-1/blob/dev/docs/Architecture%20Diagram-Phase%204.png?raw=true)
 
 
 #### Task 2: Developing a cost estimate
@@ -158,7 +158,7 @@ The command expects the endpoint, username and database name of our RDS name. Bo
 Before we acctually tested the application, we first had to connect our database with the EC2 instance, which can be easily achieved through the AWS Console. We simply tested the application by loading the website and performed some tasks such as entering a user, updating a user and deleting it.
 
 After this phase, the architecture looks as follows: 
-![alt text](https://github.com/tarikmaljanovic/devops-engineering-onaws-cloud-group-1/blob/dev/docs/Architecture%20Diagram-Phase%204.png?raw=true)
+![alt text](https://github.com/tarikmaljanovic/devops-engineering-onaws-cloud-group-1/blob/dev/docs/Architecture%20Diagram-Phase%203.png?raw=true)
 
 ### Phase 4: Implementing high availability and scalability
 In this phase, the objective is to use the key components that you created in earlier phases to build a scalable and highly available architecture. This is achieved by enabling auto-scaling and introducing a Load Balancer to our architecture.
@@ -176,4 +176,4 @@ loadtest --rps 1000  -c 500 -k http://tariklb-962256726.us-east-1.elb.amazonaws.
 A minimum of two instances, a maximum of six instances, and a desired capacity of two instances were set up for our ALB. Using the script mentioned above, we were able to make 500 requests at a time, or 1000 requests every second. The application processed the load in five instances without any issues.
 
 Once the last task has been completed, the final architecture of our project was as follows:
-![alt text](https://github.com/tarikmaljanovic/devops-engineering-onaws-cloud-group-1/blob/dev/docs/Architecture%20Diagram-Phase%203.png?raw=true)
+![alt text](https://github.com/tarikmaljanovic/devops-engineering-onaws-cloud-group-1/blob/dev/docs/Architecture%20Diagram-Phase%204.png?raw=true)

@@ -100,14 +100,67 @@ chmod +x /etc/rc.local
 #### Task 3: Testing the deployment
 The deployment was tested by simply entering either the public IPv4 address or DNS record into the URL bar within the browser and seeing whether the website loads or not. If the website loaded sucessfully, we tested it further by entering some test data, updating it and deleting it.
 
+After this phase, the architecture looks as follows: 
+
+![alt text](https://github.com/tarikmaljanovic/devops-engineering-onaws-cloud-group-1/blob/dev/docs/Architecture%20Diagram-Phase%202.png?raw=true)
+
+
 ### Phase 3: Decoupling the application components
+In this phase, the objective is to separate the database and the web server infrastructure so that they run independently. The web application should run on a separate virtual machine, and the database should run on the managed service infrastructure.
 #### Task 1: Changing the VPC configuration
+The task demands to change the VPC configuration to support hosting the database separately from the application, thus we already included the rule in our security group to allow MYSQL/AURORA traffic on port 3306 from the source 10.0.0.0/16 (the CIDR block of VPC). Additionally, we implemented the NAT gateway and establish a connection with the private subnetworks, where the database will reside.
 #### Task 2: Creating and configuring the Amazon RDS database
+In this task, we first created a subnet group to determine on which subnetworks the database will reside and to which VPC it belongs to. Additionally, we created a database using the Amazon RDS service. The database uses a MYSQL engine, set the deployment to be multi-AZ DB instance (the database supports multi- zone connections), entered the master passwords, selected the instance type according to the lab, configured the storage settings, configured the connectivity settings (VPC, DB subnet group) and disabled enhanced monitoring (as according to the instructions).
 #### Task 3: Configuring the development environment
+In this task, we were instucted to create a Cloud9 enviroment to run AWS command line interface, with the specifications to use t3.micro, instance type and secure shell (SSH). This would provide us with an enivorment to execute commands needed to complete the following tasks, such as: creating a secret that stores our database credentials, data migration and load testing.  
 #### Task 4: Provisioning Secrets Manager
+To provision a secret that stores our database credentials, we use our Cloud9 enviroment to run the following command: 
+```
+aws secretsmanager create-secret \
+    --name Mydbsecret \
+    --description "Database secret for web app" \
+    --secret-string "{\"user\":\"nodeapp\",\"password\":\"password\",\"host\":\"students.civdppduobvd.us-east-1.rds.amazonaws.com\",\"db\":\"STUDENTS\"}"
+```
+This command will create a secret in the AWS Secrets Manager service that stores the username, password, host and database name. This secret will be used by our EC2 instance to connect to the database.
 #### Task 5: Provisioning a new instance for the web server
+In this task, we created a new EC2 instance that does not host its own MYSQL server, but rather connects to an external server. The following script was used in the UserData field to create an instance: 
+```
+#!/bin/bash -xe
+apt update -y
+apt install nodejs unzip wget npm mysql-client -y
+#wget https://aws-tc-largeobjects.s3.us-west-2.amazonaws.com/CUR-TF-200-ACCAP1-1-DEV/code.zip -P /home/ubuntu
+wget https://aws-tc-largeobjects.s3.us-west-2.amazonaws.com/CUR-TF-200-ACCAP1-1-79581/1-lab-capstone-project-1/code.zip -P /home/ubuntu
+cd /home/ubuntu
+unzip code.zip -x "resources/codebase_partner/node_modules/*"
+cd resources/codebase_partner
+npm install aws aws-sdk
+export APP_PORT=80
+npm start &
+echo '#!/bin/bash -xe
+cd /home/ubuntu/resources/codebase_partner
+export APP_PORT=80
+npm start' > /etc/rc.local
+chmod +x /etc/rc.local
+```
+This script is similar to the previous one with the exception that it does not create its own database and table, instead it only installs the necessary dependencies and runs the website on the server (instance).
+
 #### Task 6: Migrating the database
+Last task before testing the new instance is to migrate the data from our old instance to our new RDS database. We achieved this by running the following command in our Cloud9 enviroment: 
+```
+mysqldump -h 10.0.0.165 -u nodeapp -p --databases STUDENTS > data.sql
+```
+The first command will create a MYSQL dump file containing the scheme and data of our database on the instance whose private IPv4 address is mentioned in the command. The dump file will be stored in the Cloud9 enviroment directory if the command is successful. The next command will import the data from the dump file into the RDS database: 
+```
+mysql -h students.civdppduobvd.us-east-1.rds.amazonaws.com -u nodeapp -p  STUDENTS < data.sql
+```
+The command expects the endpoint, username and database name of our RDS name. Both commands will prompt the user to enter a password. The second command expects the password we provided when we created the database. 
 #### Task 7: Testing the application
+Before we acctually tested the application, we first had to connect our database with the EC2 instance, which can be easily achieved through the AWS Console. We simply tested the application by loading the website and performed some tasks such as entering a user, updating a user and deleting it.
+
+After this phase, the architecture looks as follows: 
+![alt text](https://github.com/tarikmaljanovic/devops-engineering-onaws-cloud-group-1/blob/dev/docs/Architecture%20Diagram-Phase%203.png?raw=true)
+
+
 
 ### Phase 4: Implementing high availability and scalability
 #### Task 1: Creating an Application Load Balancer

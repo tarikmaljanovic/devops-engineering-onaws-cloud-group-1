@@ -160,10 +160,20 @@ Before we acctually tested the application, we first had to connect our database
 After this phase, the architecture looks as follows: 
 ![alt text](https://github.com/tarikmaljanovic/devops-engineering-onaws-cloud-group-1/blob/dev/docs/Architecture%20Diagram-Phase%203.png?raw=true)
 
-
-
 ### Phase 4: Implementing high availability and scalability
+In this phase, the objective is to use the key components that you created in earlier phases to build a scalable and highly available architecture. This is achieved by enabling auto-scaling and introducing a Load Balancer to our architecture.
 #### Task 1: Creating an Application Load Balancer
+To create a Load Balancer, we first had to create a Target Group that includes the instances for which the network load is balanced. Then we continue the task of creating a load balancer by selecting our VPC, the subnetworks the balancer will use, the security group we created earlier and a listener for HTTP on port 80.
 #### Task 2: Implementing Amazon EC2 Auto Scaling
+To implement Auto Scaling, we created a launch template that would launch new EC2 instances based on the AMI we create. Prior to this step we created an Amazon Machine Image (AMI) by using our new EC2 instance, which is used to create a replica of our insance so that we don't deal with specifications every time we want to create a new EC2 instance. Once we created a launch imge by speicifying the computational, network, attached the load balancer and other options, two new instances should have been created that run our application.
 #### Task 3: Accessing the application
+We test our application by entering the Load Balancer DNS record into the browser URL bar. Once the site was loaded we performed simple operations such as creating, updating and deleting a user.
 #### Task 4: Load testing the application
+To load test our application we used the following command:
+```
+loadtest --rps 1000  -c 500 -k http://tariklb-962256726.us-east-1.elb.amazonaws.com/students
+```
+A minimum of two instances, a maximum of six instances, and a desired capacity of two instances were set up for our ALB. Using the script mentioned above, we were able to make 500 requests at a time, or 1000 requests every second. The application processed the load in five instances without any issues.
+
+Once the last task has been completed, the final architecture of our project was as follows:
+![alt text](https://github.com/tarikmaljanovic/devops-engineering-onaws-cloud-group-1/blob/dev/docs/Architecture%20Diagram-Phase%204.png?raw=true)
